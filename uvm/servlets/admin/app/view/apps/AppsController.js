@@ -3,7 +3,7 @@ Ext.define('Ung.view.apps.AppsController', {
     alias: 'controller.apps',
 
     control: {
-        '#': { afterrender: 'onInit', activate: 'onActivate' },
+        '#': { afterrender: 'onAfterRender', activate: 'onActivate' },
         '#installableApps': { deactivate: 'onInstallableDeactivate' },
         '#installableApps > dataview': { select: 'onInstallApp' }
     },
@@ -21,7 +21,7 @@ Ext.define('Ung.view.apps.AppsController', {
     },
 
     // build the apps components and add them to the view
-    onInit: function () {
+    onAfterRender: function () {
         var me = this;
         // maybe there is a better way to get all the available apps regardless of policy
         var initPolicy = rpc.appsViews[0]; // take the first policy (default)
@@ -71,7 +71,6 @@ Ext.define('Ung.view.apps.AppsController', {
 
         // when policy changes get the apps, this is needed because
         vm.bind('{policyId}', function (val) {
-            console.log(val);
             if (Ext.getStore('policiestree').getCount() > 0) {
                 var policyNode = Ext.getStore('policiestree').findNode('policyId', vm.get('policyId'));
                 if (policyNode) {

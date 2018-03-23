@@ -44,6 +44,9 @@ Ext.define('Ung.view.dashboard.DashboardController', {
             .then(function (result) {
                 Ung.dashboardSettings = result;
                 Ext.getStore('widgets').loadData(result.widgets.list);
+
+                me.getView().down('#since > button').setText(result.timeframe);
+
                 Ung.app.reportscheck();
             });
 
@@ -182,6 +185,25 @@ Ext.define('Ung.view.dashboard.DashboardController', {
             dashboard.getEl().on('resize', me.debounce(me.updateWidgetsVisibility, 500));
         }
     },
+
+    updateSince: function (menu, item) {
+        var me = this, dashboard = me.lookup('dashboard');
+        menu.up('button').setText(item.text);
+        Ung.dashboardSettings.timeframe = item.value;
+
+        Rpc.asyncData('rpc.dashboardManager.setSettings', Ung.dashboardSettings)
+            .then(function() {
+                Util.successToast('<span style="color: yellow; font-weight: 600;">Dashboard Saved!</span>');
+
+                // console.log(dashboard.query('reportwidget'));
+                Ext.Array.each(dashboard.query('reportwidget'), function (widgetCmp) {
+                    widgetCmp.lastFetchTime = null;
+                });
+                me.updateWidgetsVisibility();
+            });
+
+    },
+
 
     onResize: function (view) {
         if (view.down('window')) {

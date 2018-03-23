@@ -53,6 +53,42 @@ Ext.define('Ung.view.dashboard.Dashboard', {
             bind: {
                 hidden: '{!reportsAppStatus.installed || !reportsAppStatus.enabled}'
             }
+        }, {
+            xtype: 'container',
+            itemId: 'since',
+            margin: '0 5',
+            layout: {
+                type: 'hbox',
+                align: 'middle'
+            },
+            items: [{
+                xtype: 'component',
+                margin: '0 5 0 0',
+                style: {
+                    fontSize: '11px'
+                },
+                html: '<strong>' + 'Since:'.t() + '</strong>'
+            }, {
+                xtype: 'button',
+                iconCls: 'fa fa-clock-o',
+                text: 'Today'.t(),
+                focusable: false,
+                menu: {
+                    plain: true,
+                    showSeparator: false,
+                    mouseLeaveDelay: 0,
+                    items: [
+                        { text: '1 Hour ago'.t(), value: 1 },
+                        { text: '3 Hours ago', value: 3, until: null },
+                        { text: '6 Hours ago', value: 6 },
+                        { text: '12 Hours ago', value: 12 },
+                        { text: '24 Hours ago', value: 24 }
+                    ],
+                    listeners: {
+                        click: 'updateSince'
+                    }
+                }
+            }],
         }]
     }],
 
