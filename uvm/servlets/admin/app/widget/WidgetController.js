@@ -31,7 +31,6 @@ Ext.define('Ung.widget.WidgetController', {
         var me = this, vm = me.getViewModel(), eventGrid = widget.down('eventreport > ungrid');
         // add to queue non report widgets when enabled
         vm.bind('{widget.enabled}', function (enabled) {
-            console.log(enabled);
             if (enabled && (Ext.isFunction(widget.fetchData) || widget.getXType() === 'reportwidget')) {
                 widget.visible = true;
                 DashboardQueue.add(widget);
@@ -47,7 +46,6 @@ Ext.define('Ung.widget.WidgetController', {
                 }else{
                     Rpc.asyncData('rpc.dashboardManager.setSettings', Ung.dashboardSettings)
                         .then(function () {
-                        // console.log('saved');
                         });
                 }
             }, me) );

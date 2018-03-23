@@ -48,7 +48,11 @@ Ext.define('Ung.view.dashboard.Dashboard', {
             handler: 'toggleManager'
         }, '-', {
             xtype: 'globalconditions',
-            context: 'DASHBOARD'
+            context: 'DASHBOARD',
+            hidden: true,
+            bind: {
+                hidden: '{!reportsAppStatus.installed || !reportsAppStatus.enabled}'
+            }
         }]
     }],
 
@@ -92,10 +96,10 @@ Ext.define('Ung.view.dashboard.Dashboard', {
                 type: 'vbox',
                 align: 'stretch'
             },
-            // hidden: true,
-            // bind: {
-            //     hidden: '{!reportsInstalled}'
-            // },
+            hidden: true,
+            bind: {
+                hidden: '{!reportsAppStatus.installed || !reportsAppStatus.enabled}'
+            },
             items: [{
                 xtype: 'label',
                 bind: {
@@ -109,24 +113,7 @@ Ext.define('Ung.view.dashboard.Dashboard', {
                 maxValue: 24,
                 publishes: 'value',
                 publishOnComplete: false
-            }
-            // , {
-            //     xtype: 'combo',
-            //     itemId: 'theme',
-            //     fieldLabel: 'Theme'.t(),
-            //     editable: false,
-            //     store: [
-            //         ['DEFAULT', 'Default'.t()],
-            //         ['DARK', 'Dark'.t()],
-            //         ['SAND', 'Sand'.t()]
-            //     ],
-            //     queryMode: 'local',
-            //     bind: {
-            //         value: '{theme}',
-            //     },
-            //     allowBlank: false
-            // }
-            ]
+            }]
         }, {
             xtype: 'toolbar',
             dock: 'top',
@@ -137,9 +124,9 @@ Ext.define('Ung.view.dashboard.Dashboard', {
                 iconCls: 'fa fa-plus-circle',
                 handler: 'addWidget',
                 hidden: true,
-                // bind: {
-                //     hidden: '{!reportsInstalled}'
-                // }
+                bind: {
+                    hidden: '{!reportsAppStatus.installed}'
+                }
             }, '->', {
                 text: 'Import'.t(),
                 iconCls: 'fa fa-download',

@@ -39,15 +39,9 @@ Ext.define('Ung.cmp.AppRemove', {
                 Rpc.asyncData('rpc.appManager.destroy', vm.get('instance.id'))
                     .then(function (result) {
 
-                        if (vm.get('instance.appName') === 'reports') { // just reload the dashboard
-                            // Ung.app.getMainView().getViewModel().set({
-                            //     reportsInstalled: false,
-                            //     reportsRunning: false
-                            // });
-                            // Ext.fireEvent('onreports', false, false);
-                            Ung.app.reportscheck();
+                        if (vm.get('instance.appName') === 'reports') {
+                            Ung.app.reportscheck(); // check reports
                             Ung.app.redirectTo('#apps');
-                            // window.location.href = '/admin/index.do';
                             return;
                         }
 

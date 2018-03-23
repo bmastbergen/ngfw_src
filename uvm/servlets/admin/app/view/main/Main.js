@@ -15,17 +15,7 @@ Ext.define('Ung.view.main.Main', {
     /* requires-end */
 
     controller: 'main',
-    viewModel: {
-        // data: {
-        //     reportsInstalled: false,
-        //     reportsRunning: false
-        // },
-        formulas: {
-            reportsEnabled: function (get) {
-                return (get('reportsInstalled') && get('reportsRunning'));
-            }
-        }
-    },
+    viewModel: {},
 
     layout: 'card',
     border: false,

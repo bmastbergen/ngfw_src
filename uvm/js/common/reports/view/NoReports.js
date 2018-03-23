@@ -9,7 +9,6 @@ Ext.define('Ung.view.reports.NoReports', {
     layout: {
         type: 'vbox',
         align: 'middle'
-        // pack: 'center'
     },
 
     margin: 20,
@@ -82,19 +81,6 @@ Ext.define('Ung.view.reports.NoReports', {
             btn.setHidden(true);
             wait.setHidden(false);
 
-            // if (!appManager) { return; }
-            // reportsApp.start(function (result, ex) {
-            //     wait.setHidden(true);
-            //     if (ex) {
-            //         Ext.Msg.alert('Error', ex.message);
-            //         return;
-            //     }
-            //     wait.setHtml('<i class="fa fa-check fa-lg"></i> <br/><br/> Enabling reports ...');
-            //     Ext.defer(function () {
-            //         Ung.app.reportscheck();
-            //     }, 250);
-            // });
-
             var runStateWantState = 'RUNNING',
                 runStateWait = 10000,
                 runStateDelay = 100,
@@ -112,11 +98,9 @@ Ext.define('Ung.view.reports.NoReports', {
                     } else {
                         Ung.app.reportscheck();
                         wait.setHidden(true);
-                        // Ung.app.getGlobalController().getAppsView().getController().getApps();
                     }
                 });
             });
-
 
             appManager.start(function (result, ex) {
                 if (ex) {
@@ -127,8 +111,6 @@ Ext.define('Ung.view.reports.NoReports', {
                 }
                 runStateTask.delay( this.runStateDelay );
             });
-
         }
     }
-
 });
