@@ -3,7 +3,7 @@ Ext.define('Ung.view.apps.AppsController', {
     alias: 'controller.apps',
 
     control: {
-        '#': { afterrender: 'onAfterRender', activate: 'onActivate' },
+        '#': { afterrender: 'onInit', activate: 'onActivate' },
         '#installableApps': { deactivate: 'onInstallableDeactivate' },
         '#installableApps > dataview': { select: 'onInstallApp' }
     },
@@ -14,7 +14,7 @@ Ext.define('Ung.view.apps.AppsController', {
             }
         },
         global: {
-            init: 'onInit',
+            // init: 'onInit',
             appremove: 'onRemoveApp',
             postregistration: 'onPostRegistration',
         }
@@ -61,6 +61,33 @@ Ext.define('Ung.view.apps.AppsController', {
 
         me.getView().down('#_apps').add(appCmps);
         me.getView().down('#_services').add(srvCmps);
+
+        var vm = this.getViewModel();
+
+        vm.bind('{reportsAppStatus}', function () {
+            rpc.appsViews = rpc.appManager.getAppsViews();
+            Ext.getStore('policies').loadData(rpc.appsViews);
+            Ext.getStore('policiestree').build();
+            me.getApps();
+            // rpc.appsViews = rpc.appManager.getAppsViews();
+            // Ext.getStore('policies').loadData(rpc.appsViews);
+            // Ext.getStore('policiestree').build();
+            // me.applyPolicy(vm.get('policyId'));
+        });
+
+        // when policy changes get the apps, this is needed because
+        vm.bind('{policyId}', function (val) {
+            console.log(val);
+            if (Ext.getStore('policiestree').getCount() > 0) {
+                var policyNode = Ext.getStore('policiestree').findNode('policyId', vm.get('policyId'));
+                if (policyNode) {
+                    vm.set('policyName', policyNode.get('name'));
+                    me.getApps();
+                } else {
+                    Ung.app.redirectTo('#apps/1'); // redirect to main policy if in apps view
+                }
+            }
+        });
 
         // me.applyPolicy(initPolicy);
     },
@@ -134,22 +161,6 @@ Ext.define('Ung.view.apps.AppsController', {
         this.getViewModel().set('policyManagerInstalled', rpc.appManager.app('policy-manager') ? true : false);
     },
 
-    // after rendering, get the apps of the selected policy ID
-    onAfterRender: function () {
-        var me = this, vm = this.getViewModel();
-        // when policy changes get the apps, this is needed because
-        vm.bind('{policyId}', function (val) {
-            if (Ext.getStore('policiestree').getCount() > 0) {
-                var policyNode = Ext.getStore('policiestree').findNode('policyId', vm.get('policyId'));
-                if (policyNode) {
-                    vm.set('policyName', policyNode.get('name'));
-                    me.getApps();
-                } else {
-                    Ung.app.redirectTo('#apps/1'); // redirect to main policy if in apps view
-                }
-            }
-        });
-    },
 
     // remove already finished installed apps when deactivating the view
     onInstallableDeactivate: function () {

@@ -91,6 +91,11 @@ Ext.define('Ung.cmp.AppState', {
                             rpc.appsViews= rpc.appManager.getAppsViews();
                             Ext.getStore('policies').loadData(rpc.appsViews);
                             Ung.app.getGlobalController().getAppsView().getController().getApps();
+
+                            if (appManager.getAppProperties().name === 'reports') {
+                                Ung.app.reportscheck();
+                            }
+
                         }
                     }, this) );
                 }, me) );

@@ -92,10 +92,10 @@ Ext.define('Ung.view.dashboard.Dashboard', {
                 type: 'vbox',
                 align: 'stretch'
             },
-            hidden: true,
-            bind: {
-                hidden: '{!reportsInstalled}'
-            },
+            // hidden: true,
+            // bind: {
+            //     hidden: '{!reportsInstalled}'
+            // },
             items: [{
                 xtype: 'label',
                 bind: {
@@ -137,9 +137,9 @@ Ext.define('Ung.view.dashboard.Dashboard', {
                 iconCls: 'fa fa-plus-circle',
                 handler: 'addWidget',
                 hidden: true,
-                bind: {
-                    hidden: '{!reportsInstalled}'
-                }
+                // bind: {
+                //     hidden: '{!reportsInstalled}'
+                // }
             }, '->', {
                 text: 'Import'.t(),
                 iconCls: 'fa fa-download',

@@ -16,6 +16,10 @@ Ext.define('Ung.view.main.Main', {
 
     controller: 'main',
     viewModel: {
+        // data: {
+        //     reportsInstalled: false,
+        //     reportsRunning: false
+        // },
         formulas: {
             reportsEnabled: function (get) {
                 return (get('reportsInstalled') && get('reportsRunning'));
@@ -36,6 +40,9 @@ Ext.define('Ung.view.main.Main', {
     }],
 
     items: [{
+        xtype: 'container',
+        html: 'Loading ....'
+    }, {
         xtype: 'ung-dashboard'
     }, {
         xtype: 'ung.apps'
@@ -43,5 +50,5 @@ Ext.define('Ung.view.main.Main', {
         xtype: 'ung.config'
     }, {
         xtype: 'ung.reports'
-    }],
+    }]
 });

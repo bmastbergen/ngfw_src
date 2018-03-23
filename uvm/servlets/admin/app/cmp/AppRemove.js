@@ -40,7 +40,14 @@ Ext.define('Ung.cmp.AppRemove', {
                     .then(function (result) {
 
                         if (vm.get('instance.appName') === 'reports') { // just reload the dashboard
-                            window.location.href = '/admin/index.do';
+                            // Ung.app.getMainView().getViewModel().set({
+                            //     reportsInstalled: false,
+                            //     reportsRunning: false
+                            // });
+                            // Ext.fireEvent('onreports', false, false);
+                            Ung.app.reportscheck();
+                            Ung.app.redirectTo('#apps');
+                            // window.location.href = '/admin/index.do';
                             return;
                         }
 

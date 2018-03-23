@@ -12,6 +12,7 @@ Ext.define('Ung.view.dashboard.DashboardController', {
     viewModel: true,
     control: {
         '#': {
+            afterrender: 'onAfterRender',
             activate: 'onActivate',
             deactivate: 'onDeactivate',
         },
@@ -24,10 +25,7 @@ Ext.define('Ung.view.dashboard.DashboardController', {
 
     listen: {
         global: {
-            init: 'onInit',
-            // appinstall: 'onAppInstall',
-            // addRemoveReportwidget: 'onAddRemoveReportWidget', // fired from Reports view
-            reportsInstall: 'loadWidgets',
+            // reportsInstall: 'loadWidgets',
             widgetaction: 'onWidgetAction'
         },
         store: {
@@ -37,17 +35,25 @@ Ext.define('Ung.view.dashboard.DashboardController', {
         }
     },
 
-    // not used
-    // onAfterRender: function (view) {
-    //     // var me = this;
-    //     // me.getViewModel().bind('{theme}', function (theme) {
-    //     //     Ung.dashboardSettings.theme = theme;
-    //     //     Ext.Array.each(me.lookup('dashboard').query('graphreport'), function (graph) {
-    //     //         graph.getController().setStyles();
-    //     //     });
-    //     // });
+    onAfterRender: function () {
+        var me = this, vm = me.getViewModel();
 
-    // },
+        vm.bind('{reportsAppStatus}', function (status) {
+            console.log(status);
+            me.loadWidgets();
+        });
+
+        // refresh report widgets on global conditions update
+        vm.bind('{query.string}', function () {
+            Ext.Array.each(me.lookup('dashboard').query('reportwidget'), function (widgetCmp) {
+                if (widgetCmp.lastFetchTime) {
+                    widgetCmp.lastFetchTime = null;
+                    DashboardQueue.add(widgetCmp);
+                }
+            });
+        });
+
+    },
 
     debounce: function (fn, delay) {
         var timer = null;
@@ -62,6 +68,7 @@ Ext.define('Ung.view.dashboard.DashboardController', {
 
     // monitor scrolling/resizing
     updateWidgetsVisibility: function () {
+        console.log('visibility');
         var dashboard = this.lookup('dashboard'),
             widgets = dashboard.query('reportwidget');
         DashboardQueue.isVisible(dashboard.down('networklayoutwidget'));
@@ -76,30 +83,19 @@ Ext.define('Ung.view.dashboard.DashboardController', {
         });
     },
 
-    onInit: function () {
-        var me = this, vm = me.getViewModel();
-        me.loadWidgets();
-
-        // refresh report widgets on global conditions update
-        vm.bind('{query}', function () {
-            Ext.Array.each(me.lookup('dashboard').query('reportwidget'), function (widgetCmp) {
-                widgetCmp.lastFetchTime = null;
-                DashboardQueue.add(widgetCmp);
-            });
-        });
-
-    },
 
 
     /**
      * Load initial dashboard widgets
      */
     loadWidgets: function() {
-        // console.log('loadWidgets');
+        console.log('loadWidgets');
         var me = this, vm = me.getViewModel(),
             dashboard = me.lookup('dashboard'),
             widgets = Ext.getStore('widgets').getRange(),
             i, widget, entry;
+
+        console.log(dashboard);
 
         // refresh the dashboard manager grid if the widgets were affected
         me.lookup('dashboardManager').getView().refresh();
@@ -125,7 +121,7 @@ Ext.define('Ung.view.dashboard.DashboardController', {
                 });
             }
             else {
-                if (vm.get('reportsEnabled')) {
+                if (vm.get('reportsAppStatus.installed') && vm.get('reportsAppStatus.enabled')) {
                     entry = Ext.getStore('reports').findRecord('uniqueId', widget.get('entryId'));
 
                     if (entry && !Ext.getStore('unavailableApps').first().get(entry.get('category')) && widget.get('enabled')) {
@@ -167,7 +163,7 @@ Ext.define('Ung.view.dashboard.DashboardController', {
 
         if (!me.widgetsRendered) {
             me.widgetsRendered = true;
-
+            console.log('here');
             // add scroll/resize events
             dashboard.body.on('scroll', me.debounce(me.updateWidgetsVisibility, 500));
             dashboard.getEl().on('resize', me.debounce(me.updateWidgetsVisibility, 500));
@@ -651,16 +647,21 @@ Ext.define('Ung.view.dashboard.DashboardController', {
     },
 
     onActivate: function () {
-        DashboardQueue.paused = false;
-        this.updateWidgetsVisibility();
+        var me = this;
+        if (me.activated) {
+            return;
+        }
+        me.activated = true;
+
     },
 
     onDeactivate: function () {
-        DashboardQueue.paused = true;
-        var vm = this.getViewModel();
-        if (vm.get('managerVisible')) {
-            this.toggleManager();
-        }
+        console.log('deactivate');
+        // DashboardQueue.paused = true;
+        // var vm = this.getViewModel();
+        // if (vm.get('managerVisible')) {
+        //     this.toggleManager();
+        // }
     },
 
     addWidget: function () {

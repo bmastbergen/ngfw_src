@@ -14,10 +14,12 @@
     "globals": {
         "Ext": true,
         "Highcharts": true,
+        "JSONRpcClient": true,
         "Ung": true,
         "Rpc": true,
         "rpc": true,
         "Util": true,
+        "Metrics": true,
         "TableConfig": true,
         "DashboardQueue": true,
         "Renderer": true,
